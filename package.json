@@ -1,0 +1,24 @@
+{
+  "name": "react-native-peiwen-recognize",
+  "version": "1.0.0",
+  "description": "Baidu speech recognition component for react-native, currently only supports Android platform, and only supports online recognition",
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bingfeng1225/react-native-peiwen-recognize.git"
+  },
+   "keywords": [
+	"baidu",
+	"android",
+	"recognize",
+    "react-native",
+    "react-component"
+  ],
+  "author": "peiwen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bingfeng1225/react-native-peiwen-recognize/issues"
+  },
+  "homepage": "https://github.com/bingfeng1225/react-native-peiwen-recognize#readme"
+}
