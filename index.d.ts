@@ -1,5 +1,7 @@
-declare module "react-native-pwrecognize" {
+declare module "react-native-peiwen-recognize" {
     export default class PWRecognize {
-        static hide(): void;
+        static start(): void;
+        static stop(): void;
+        static cancel(): void;
     }
 }

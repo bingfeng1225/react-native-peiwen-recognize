@@ -1,25 +1,33 @@
 package com.qd.peiwen.recognize;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.baidu.speech.EventListener;
 import com.baidu.speech.asr.SpeechConstant;
+import com.facebook.react.ReactApplication;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.qd.peiwen.recognize.entity.ResultEntity;
 import com.qd.peiwen.recognize.entity.VolumeEntity;
-import com.qd.peiwen.recognize.recog.RecogResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by fujiayi on 2017/6/14.
  */
 
 public class PWEventListener implements EventListener {
+    private Context context;
     private static final String TAG = "RecogEventAdapter";
-    public PWEventListener() {
 
+    public PWEventListener(Context context) {
+        this.context = context;
     }
     // 基于DEMO集成3.1 开始回调事件
     @Override
@@ -31,21 +39,40 @@ public class PWEventListener implements EventListener {
          if (name.equals(SpeechConstant.CALLBACK_EVENT_ASR_READY)) {
              // 引擎准备就绪，可以开始说话
              Log.i(TAG,"【"+name+"】引擎就绪，可以开始说话");
-        } else if (name.equals(SpeechConstant.CALLBACK_EVENT_ASR_BEGIN)) {
+             Map<String,Object> map = new HashMap<>();
+             map.put("EventType",name);
+             this.sendReactNativeEvent(map);
+         } else if (name.equals(SpeechConstant.CALLBACK_EVENT_ASR_BEGIN)) {
              // 检测到用户的已经开始说话
              Log.i(TAG,"【"+name+"】检测到用户说话");
-        } else if (name.equals(SpeechConstant.CALLBACK_EVENT_ASR_END)) {
+             Map<String,Object> map = new HashMap<>();
+             map.put("EventType",name);
+             this.sendReactNativeEvent(map);
+         } else if (name.equals(SpeechConstant.CALLBACK_EVENT_ASR_END)) {
             // 检测到用户的已经停止说话
              Log.i(TAG,"【"+name+"】检测到用户说话结束");
-        } else if (name.equals(SpeechConstant.CALLBACK_EVENT_ASR_PARTIAL)) {
-            RecogResult recogResult = RecogResult.parseJson(params);
+             Map<String,Object> map = new HashMap<>();
+             map.put("EventType",name);
+             this.sendReactNativeEvent(map);
+         } else if (name.equals(SpeechConstant.CALLBACK_EVENT_ASR_PARTIAL)) {
+             ResultEntity recogResult = this.parseResultJson(params);
             String[] results = recogResult.getResultsRecognition();
             if (recogResult.isFinalResult()) {
                 // 最终识别结果，长语音每一句话会回调一次
                 Log.i(TAG,"【"+name+"】最终识别结果:" + results[0]);
+                Map<String,Object> map = new HashMap<>();
+                map.put("EventType",name);
+                map.put("Final",true);
+                map.put("Result",results[0]);
+                this.sendReactNativeEvent(map);
             } else if (recogResult.isPartialResult()) {
                 // 临时识别结果
                 Log.i(TAG,"【"+name+"】临时识别结果:" + results[0]);
+                Map<String,Object> map = new HashMap<>();
+                map.put("EventType",name);
+                map.put("Final",false);
+                map.put("Result",results[0]);
+                this.sendReactNativeEvent(map);
             }
         } else if (name.equals(SpeechConstant.CALLBACK_EVENT_ASR_FINISH)) {
             // 识别结束
@@ -58,13 +85,45 @@ public class PWEventListener implements EventListener {
             } else {
                 Log.i(TAG,"【"+name+"】识别一段话结束");
             }
+             Map<String,Object> map = new HashMap<>();
+             map.put("EventType",name);
+             map.put("ErrorCode",recogResult.getError());
+             map.put("SubErrorCode",recogResult.getSubError());
+             this.sendReactNativeEvent(map);
         } else if (name.equals(SpeechConstant.CALLBACK_EVENT_ASR_EXIT)) {
              //引擎空闲
              Log.i(TAG,"【"+name+"】识别引擎结束并空闲中");
-        } else if (name.equals(SpeechConstant.CALLBACK_EVENT_ASR_VOLUME)) {
+             Map<String,Object> map = new HashMap<>();
+             map.put("EventType",name);
+             this.sendReactNativeEvent(map);
+         } else if (name.equals(SpeechConstant.CALLBACK_EVENT_ASR_VOLUME)) {
             VolumeEntity volume = this.parseVolumeJson(params);
              Log.i(TAG,"【"+name+"】音量:" + volume.getVolume()+",百分比:" + volume.getPercent());
+             Map<String,Object> map = new HashMap<>();
+             map.put("EventType",name);
+             map.put("Volume",volume.getVolume());
+             map.put("Percent",volume.getPercent());
+             this.sendReactNativeEvent(map);
          }
+    }
+
+
+    private void sendReactNativeEvent(Map<String,Object> map){
+        try {
+            JSONObject object = new JSONObject();
+            for (String key:map.keySet()) {
+                object.put(key,map.get(key));
+            }
+            this.deviceEventEmitter().emit("PW_RECOGNIZE",object.toString());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+    private DeviceEventManagerModule.RCTDeviceEventEmitter deviceEventEmitter(){
+        ReactApplication application = (ReactApplication)this.context.getApplicationContext();
+        ReactContext context = application.getReactNativeHost().getReactInstanceManager().getCurrentReactContext();
+        return context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
     }
 
     private VolumeEntity parseVolumeJson(String jsonStr) {

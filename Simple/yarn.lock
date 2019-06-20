@@ -4858,6 +4858,11 @@ react-is@^16.8.1, react-is@^16.8.3, react-is@^16.8.4:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.6.tgz#5bbc1e2d29141c9fbdfed456343fe2bc430a6a16"
   integrity sha512-aUk3bHfZ2bRSVFFbbeVS4i+lNPZr3/WM5jT2J5omUVV1zzcs1nAaf3l51ctA5FFvCRbhrH0bdAsRRQddFJZPtA==
 
+react-native-peiwen-recognize@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-peiwen-recognize/-/react-native-peiwen-recognize-1.0.0.tgz#d98138bd5f1a8388f802947b0a5b60bf4dc703fc"
+  integrity sha512-04Q5waD7nyuyfKE5Fw0vfNE/W61av5vuO0/kIyE/nkBRw8cp3MKpNHyMqTZQs5oahTlCCcg6RJQR9jfPaAC4hA==
+
 react-native@0.59.9:
   version "0.59.9"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.59.9.tgz#c94ee4fa35121720c05235a2dd6cdd2784bf5177"

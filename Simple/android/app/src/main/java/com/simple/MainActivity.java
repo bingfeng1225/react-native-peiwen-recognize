@@ -1,6 +1,10 @@
 package com.simple;
 
+import android.os.Bundle;
+
 import com.facebook.react.ReactActivity;
+import com.facebook.react.bridge.ReactContext;
+import com.qd.peiwen.recognize.PWRecognizer;
 
 public class MainActivity extends ReactActivity {
 
@@ -11,5 +15,17 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "Simple";
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        PWRecognizer.getInstance().init(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        PWRecognizer.getInstance().release();
+        super.onDestroy();
     }
 }

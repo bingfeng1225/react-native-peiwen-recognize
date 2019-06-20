@@ -7,9 +7,6 @@ import com.baidu.speech.EventListener;
 import com.baidu.speech.EventManager;
 import com.baidu.speech.EventManagerFactory;
 import com.baidu.speech.asr.SpeechConstant;
-import com.qd.peiwen.recognize.recog.listener.IRecogListener;
-import com.qd.peiwen.recognize.recog.listener.RecogEventAdapter;
-import com.qd.peiwen.recognize.util.MyLogger;
 
 import org.json.JSONObject;
 
@@ -41,7 +38,7 @@ public class PWRecognizer {
             throw new RuntimeException("还未调用release()，请勿新建一个新类");
         }
         this.isInited = true;
-        this.listener = new PWEventListener();
+        this.listener = new PWEventListener(context);
         // SDK集成步骤 初始化asr的EventManager示例，多次得到的类，只能选一个使用
         this.manager = EventManagerFactory.create(context, "asr");
         // SDK集成步骤 设置回调event， 识别引擎会回调这个类告知重要状态和识别结果

@@ -56,6 +56,15 @@ public class ResultEntity {
         this.resultType = resultType;
     }
 
+    public boolean isFinalResult() {
+        return "final_result".equals(resultType);
+    }
+
+
+    public boolean isPartialResult() {
+        return "partial_result".equals(resultType);
+    }
+
     public String getOrigalResult() {
         return origalResult;
     }
